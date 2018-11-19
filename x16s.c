@@ -61,7 +61,7 @@ static void getAlgoString(const uint32_t* prevblock, char *output)
 	}
 }
 
-void shield_x16s_hash(const char* input, char* output)
+void x16s_hash(const char* input, char* output)
 {
     uint32_t hash[64/4];
     char hashOrder[HASH_FUNC_COUNT + 1] = { 0 };
