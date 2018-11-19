@@ -41,24 +41,21 @@ enum Algo {
 	HASH_FUNC_COUNT
 };
 
-static void getAlgoString(const uint32_t* prevblock, char *output)
+static void getAlgoString(const uint8_t* prevblock, char *output)
 {
-	uint8_t* data = (uint8_t*)prevblock;
+	char *sptr = output;
+	int j;
 
-	strcpy(output, "0123456789ABCDEF");
-    
-    uint8_t i;
-
-	for (i = 0; i < HASH_FUNC_COUNT; i++) {
-		uint8_t b = (15 - i) >> 1; // 16 ascii hex chars, reversed
-		uint8_t algoDigit = (i & 1) ? data[b] & 0xF : data[b] >> 4;
-		int offset = (int) algoDigit;
-		char oldVal = output[offset];
-        int j;
-		for(j=offset; j-->0;)
-			output[j+1] = output[j];
-		output[0] = oldVal;
+	for (j = 0; j < HASH_FUNC_COUNT; j++) {
+		char b = (15 - j) >> 1; // 16 ascii hex chars, reversed
+		uint8_t algoDigit = (j & 1) ? prevblock[b] & 0xF : prevblock[b] >> 4;
+		if (algoDigit >= 10)
+			sprintf(sptr, "%c", 'A' + (algoDigit - 10));
+		else
+			sprintf(sptr, "%u", (uint32_t) algoDigit);
+		sptr++;
 	}
+	*sptr = '\0';
 }
 
 void shield_x16s_hash(const char* input, char* output, uint32_t len)
@@ -84,12 +81,11 @@ void shield_x16s_hash(const char* input, char* output, uint32_t len)
     sph_sha512_context       ctx_sha512;
 
     void *in = (void*) input;
-    int size = 80;
+    int size = len;
 
-	uint32_t *in32 = (uint32_t*) input;
+	int i;
+	
 	getAlgoString(&in32[1], hashOrder);
-    
-    int i;
 
     for (i = 0; i < 16; i++) {
         const char elem = hashOrder[i];
