@@ -85,7 +85,7 @@ void shield_x16s_hash(const char* input, char* output, uint32_t len)
 
 	int i;
 	
-	getAlgoString(&in32[1], hashOrder);
+	getAlgoString(&input[4], hashOrder);
 
     for (i = 0; i < 16; i++) {
         const char elem = hashOrder[i];
