@@ -617,7 +617,7 @@ NAN_METHOD(x16s) {
 
     uint32_t input_len = Buffer::Length(target);
 
-    x16s_hash(input, output, input_len);
+    shield_x16s_hash(input, output, input_len);
 
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
